@@ -2,7 +2,7 @@ SELECT *
 FROM no_emp;
 
 --1. leaf node 찾기
-SELECT LPAD(' ', (level-1l,
+SELECT LPAD(' ', (level-1)*4, ' ') || org_cd, LEVEL, s_emp
 FROM
     (SELECT org_cd, parent_org_cd, SUM(s_emp) s_emp
     FROM
@@ -43,7 +43,7 @@ DECLARE
     dname VARCHAR2(14);
 BEGIN
     SELECT deptno, dname INTO deptno, dname
-    FROM deptt;
+    FROM dept;
     
     --SELECT 절의 결과를 변수에 잘 할당했는지 확인.
     dbms_output.put_line('dname : ' || dname || '(' || deptno || ')');
@@ -121,10 +121,13 @@ CREATE OR REPLACE PROCEDURE registdept_test(p_deptno IN dept_test.deptno%TYPE, p
 IS
 BEGIN
     INSERT INTO dept_test(deptno, dname, loc) VALUES(p_deptno, p_dname, p_loc);
+    COMMIT;
 END;
 /
 
 exec registdept_test('99', 'ddit', 'daejeon');
+
+ROLLBACK;
 
 SELECT *
 FROM dept_test;
